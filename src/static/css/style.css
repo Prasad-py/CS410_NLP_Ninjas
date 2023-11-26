@@ -1,0 +1,12 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  color: white ;
+  font-weight: 600;
+  }
+
+.jumbotron {
+    background-image: url('https://lh3.googleusercontent.com/0NGNffNMtOpLp_n_OMaiKBAmiP882k_0J9Diw88J3ot_fUrdsjXj75j3tTfFwu2suDM0xKyjHtP02H7P0aVb79mmGg=s1280-w1280-h800');
+    background-size: 100% 100%;
+    text-align: center;
+    color:black
+}
