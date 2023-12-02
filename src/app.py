@@ -1,6 +1,6 @@
 from flask import Flask, url_for, render_template, request, jsonify
 import json
-import ML_recommendator
+import Recommender
 
 
 app = Flask(__name__)
@@ -16,7 +16,10 @@ def test():
     latitud = result['latitude']
     longitud = result['longitude']
     words = result['words']
-    return ML_recommendator.findRecommendations(latitud,longitud,words)
+    radius = int(result['radius'])
+    minStars = int(result['minStars'])
+
+    return Recommender.findRecommendations(latitud,longitud,words,radius,minStars)
 
 
 if __name__ =="__main__":

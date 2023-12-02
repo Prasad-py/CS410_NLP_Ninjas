@@ -57,9 +57,7 @@
         <!-- NAVBAR -->
         <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
           <a class="navbar-brand" href="index_try.html">MapMingle</a>
-        </nav>  
-        <!--  JUMBOTRON -->
-        <div class="jumbotron"></div>
+        </nav>
 
         <!-- TITLE AND PARAGRAPH-->
       <div class="container-fluid">
@@ -98,13 +96,21 @@
                     <label for="coordinates">Where are you now? Select your location in the map and the values will be displayed automatically. </label>
                     <label for="coordinates1">Latitude</label>
                     <input type="text" id="coordinates1" class="form-control" placeholder=""  readonly/>
+                    <br/>
                     <label for="coordinates2">Longitude</label>
                     <input type="text" id="coordinates2" class="form-control" placeholder="" readonly/>
-                    <label for="Gpt">Gpt</label>
-                    <input type="text" id="Gpt" class="form-control" placeholder="" readonly/>
+                    <br/>
+                    <label for="radius">Within Distance (In KM)</label>
+                    <input type="text" id="radius" class="form-control" placeholder=""/>
+                    <br/>
+                    <label for="minStars">Minimum rating</label>
+                    <input type="text" id="minStars" class="form-control" placeholder=""/>
                   </li> 
                   <button type="button" onclick="sendInformation()" class="btn btn-primary btn-lg"> Submit </button>
                   <button onClick="window.location.reload();">Refresh Page</button>
+                  <br/>
+                  <label for="Gpt">Gpt Summary</label>
+                  <textarea class="form-control" rows="6" id = 'gptResponse' placeholder="ChatGPT Summary" readonly></textarea>
                     <div class="text-center">
                        <!--AGREGAR CODIGO de cuando se mande la información-->
                       <!-- <button class="button">Recommend me!</button> --> 
@@ -162,8 +168,8 @@
     
         <script>
             let map = L.map("mapid", {
-            center: [ 41.871, -87.6298],
-                zoom: 8 });
+            center: [ 39.95502330788232, -75.18661185201806],
+                zoom: 10 });
 
             // We create the tile layer that will be the background of our map.
             let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -200,7 +206,9 @@
                 let latitude = document.getElementById("coordinates1").value
                 let longitude = document.getElementById("coordinates2").value
                 let words = document.getElementById("keywords").value
-                userinfo = {latitude, longitude, words} //create a dictionary to store the variables
+                let radius = document.getElementById("radius").value
+                let minStars = document.getElementById("minStars").value
+                userinfo = {latitude, longitude, words, radius, minStars} //create a dictionary to store the variables
 
                 var s = JSON.stringify(userinfo); //pass the dictionary into json format
    
@@ -211,7 +219,7 @@
                     contentType: "application/json",
                     data: JSON.stringify(s),
                     success: function(data) {
-                      document.getElementById('Gpt').value = data.gpt_response;
+                      document.getElementById('gptResponse').value = data.gptResponse;
                       var  geojsonMarkerOptions = {
                         'radius':6,
                         'opacity': .5,
@@ -222,8 +230,8 @@
 
                       function forEachFeature(feature, layer) {
                         var popupContent = "<p>Recommendation <b>" +
-                                            feature.properties.name + "</b> ,</br> " +
-                                            feature.properties.rating + "</br> Rating "+
+                                            feature.properties.name + "</b> ,</br> <b> Rating </b>" +
+                                            feature.properties.rating + "</br> <b> Description </b>"+
                                             feature.properties.description ;
                         if (feature.properties && feature.properties.popupContent) {
                           popupContent += feature.properties.popupContent;
@@ -231,7 +239,7 @@
                         layer.bindPopup(popupContent);
                       };
 
-                      var top7 = L.geoJSON(JSON.parse(data.recommendations), {
+                      var top7 = L.geoJSON(JSON.parse(data.mapData), {
                                   onEachFeature: forEachFeature, 
                                   pointToLayer: function (feature, latlng) {
                                       return L.circleMarker(latlng, geojsonMarkerOptions);
