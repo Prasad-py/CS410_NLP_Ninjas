@@ -100,6 +100,8 @@
                     <input type="text" id="coordinates1" class="form-control" placeholder=""  readonly/>
                     <label for="coordinates2">Longitude</label>
                     <input type="text" id="coordinates2" class="form-control" placeholder="" readonly/>
+                    <label for="Gpt">Gpt</label>
+                    <input type="text" id="Gpt" class="form-control" placeholder="" readonly/>
                   </li> 
                   <button type="button" onclick="sendInformation()" class="btn btn-primary btn-lg"> Submit </button>
                   <button onClick="window.location.reload();">Refresh Page</button>
@@ -209,7 +211,7 @@
                     contentType: "application/json",
                     data: JSON.stringify(s),
                     success: function(data) {
-
+                      document.getElementById('Gpt').value = data.gpt_response;
                       var  geojsonMarkerOptions = {
                         'radius':6,
                         'opacity': .5,
@@ -229,7 +231,7 @@
                         layer.bindPopup(popupContent);
                       };
 
-                      var top7 = L.geoJSON(JSON.parse(data), {
+                      var top7 = L.geoJSON(JSON.parse(data.recommendations), {
                                   onEachFeature: forEachFeature, 
                                   pointToLayer: function (feature, latlng) {
                                       return L.circleMarker(latlng, geojsonMarkerOptions);
@@ -237,7 +239,7 @@
                                 });
 
                         top7.addTo(map)
-                        $("#user-wait").hide(500)
+                        $("#user-wait").hide(250)
                     }
 
                 });

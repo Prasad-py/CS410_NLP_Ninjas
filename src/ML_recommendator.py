@@ -3,8 +3,9 @@ import numpy as np
 from rank_bm25 import BM25Okapi
 import string
 from geopy.distance import geodesic
-from openai import OpenAI
+import openai
 
+openai.api_key = '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'
 
 # Load the first 10000 data points from the Yelp JSON dataset
 file_path = 'data/yelp_academic_dataset_business.json'
@@ -25,7 +26,7 @@ def calculate_distance(lat1, long1, lat2, long2):
     return geodesic((lat1, long1), (lat2, long2)).kilometers
 
 # Function to filter the DataFrame for businesses within a specified radius from a given point
-def filter_by_radius(df, latitude, longitude, radius = 100):
+def filter_by_radius(df, latitude, longitude, radius = 10000):
     distances = df.apply(lambda row: calculate_distance(latitude, longitude, row['latitude'], row['longitude']), axis=1)
     return df[distances <= radius].copy(), distances[distances <= radius]
 
@@ -109,13 +110,13 @@ def findRecommendations(latitud, longitud, words):
         places_info += f"- {row['PlaceName']}: {row['StarsAndReviewcounts']} within {row['Distance']} km, Categories: {row['Categories']}\n"
 
     # Initialize OpenAI client
-    client = OpenAI()
+    # client = OpenAI()
 
     # Complete prompt
     complete_prompt = f"You are a trip advisor. Your client is interested in {words}. These are the top recommendations for the client. Form a small description for the client of all these places.\n\n{places_info}"
 
     # Call to OpenAI GPT
-    response = client.completions.create(
+    response = openai.completions.create(
         model="gpt-3.5-turbo-instruct",
         prompt=complete_prompt,
         temperature=1,
@@ -124,9 +125,9 @@ def findRecommendations(latitud, longitud, words):
         frequency_penalty=0,
         presence_penalty=0
     )
-
+    gpt_response = response.choices[0].text
     # Return both the recommendations and the generated descriptions
-    return recommendations, response.text
+    return recommendations, gpt_response
 
 
 def getDescriptionsForRecommendations(places_info):
