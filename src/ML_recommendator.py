@@ -3,11 +3,13 @@ import numpy as np
 from rank_bm25 import BM25Okapi
 import string
 from geopy.distance import geodesic
+from openai import OpenAI
+
 
 # Load the first 10000 data points from the Yelp JSON dataset
 file_path = 'data/yelp_academic_dataset_business.json'
 yelp_data = pd.read_json(file_path, lines=True, chunksize=100000)
-df = next(yelp_data)  # We only load the first chunk, which is 30000 entries
+df = next(yelp_data)
 
 # Cleaning and tokenizing text without using nltk
 def clean_and_tokenize(text):
@@ -55,7 +57,35 @@ def bm25_query(bm25, df_filtered, distances_within_radius, query, top_n=10, min_
             })
     return filtered_results
 
-def findRecommendations(latitud,longitud,words) :
+# def findRecommendations(latitud,longitud,words) :
+#     df_filtered, distances_within_radius = filter_by_radius(df, latitud, longitud)
+
+#     # Check if the filtering returned an empty DataFrame
+#     if df_filtered.empty:
+#         raise ValueError("No businesses found within the specified radius. Please check your coordinates and radius.")
+    
+#     tokenized_corpus = df_filtered['tokens'].tolist()
+#     if not any(tokenized_corpus):  # Check if tokenized_corpus is not empty
+#         raise ValueError("Tokenization resulted in an empty corpus. Please check the tokenization process.")
+
+#     # Create BM25 object from the filtered tokenized 'categories'
+#     bm25 = BM25Okapi(tokenized_corpus)
+
+#     result = bm25_query(bm25, df_filtered, distances_within_radius, words, 10, 0, 0, 500)
+
+#     topRecommend_df = pd.DataFrame (result)
+
+#     # Generate the prompt for OpenAI GPT
+#     places_info = "Places of Interest descriptions:\n"
+#     for index, row in topRecommend_df.iterrows():
+#         places_info += f"- {row['PlaceName']}: {row['StarsAndReviewcounts']} within {row['Distance']} km, Categories: {row['Categories']}\n"
+
+#     recommendations = Data2geojson(topRecommend_df)
+
+#     # Return both the recommendations and the formatted string
+#     return recommendations, places_info
+
+def findRecommendations(latitud, longitud, words):
     df_filtered, distances_within_radius = filter_by_radius(df, latitud, longitud)
 
     # Check if the filtering returned an empty DataFrame
@@ -70,10 +100,54 @@ def findRecommendations(latitud,longitud,words) :
     bm25 = BM25Okapi(tokenized_corpus)
 
     result = bm25_query(bm25, df_filtered, distances_within_radius, words, 10, 0, 0, 500)
-
-    topRecommend_df = pd.DataFrame (result)
+    topRecommend_df = pd.DataFrame(result)
     recommendations = Data2geojson(topRecommend_df)
-    return recommendations
+
+    # Generate the prompt for OpenAI GPT
+    places_info = "Places of Interest descriptions:\n"
+    for index, row in topRecommend_df.iterrows():
+        places_info += f"- {row['PlaceName']}: {row['StarsAndReviewcounts']} within {row['Distance']} km, Categories: {row['Categories']}\n"
+
+    # Initialize OpenAI client
+    client = OpenAI()
+
+    # Complete prompt
+    complete_prompt = f"You are a trip advisor. Your client is interested in {words}. These are the top recommendations for the client. Form a small description for the client of all these places.\n\n{places_info}"
+
+    # Call to OpenAI GPT
+    response = client.completions.create(
+        model="gpt-3.5-turbo-instruct",
+        prompt=complete_prompt,
+        temperature=1,
+        max_tokens=256,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+
+    # Return both the recommendations and the generated descriptions
+    return recommendations, response.text
+
+
+def getDescriptionsForRecommendations(places_info):
+    # Initialize OpenAI client
+    client = OpenAI()
+
+    # Complete prompt
+    complete_prompt = f"You are a trip advisor. Your client is interested in {words}. These are the top recommendations for the client. Form a small description for the client of all these places.\n\n{places_info}"
+
+    # Call to OpenAI GPT
+    response = client.completions.create(
+        model="gpt-3.5-turbo-instruct",
+        prompt=complete_prompt,
+        temperature=1,
+        max_tokens=256,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+
+    return response.text
 
 import json
 import geojson

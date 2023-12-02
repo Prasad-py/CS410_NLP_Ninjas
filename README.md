@@ -11,4 +11,4 @@ MapMingle is a dynamic nearby places recommender system that provides personaliz
 To set up the project environment, install the required dependencies using pip:
 
 ```bash
-pip install pandas numpy rank_bm25 geopy nltk
+pip install pandas numpy nltk geopy geojson rank_bm25 flask openai
