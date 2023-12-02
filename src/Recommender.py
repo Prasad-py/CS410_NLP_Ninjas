@@ -85,9 +85,6 @@ def findRecommendations(latitud, longitud, words, radius, minStars):
     for index, row in topRecommend_df.iterrows():
         places_info += f"- {row['PlaceName']}: {row['StarsAndReviewcounts']} within {row['Distance']} km, Categories: {row['Categories']}\n"
 
-    # Initialize OpenAI client
-    client = OpenAI()
-
     # Complete prompt
     complete_prompt = f"You are a trip advisor. Your client is interested in {words}. These are the top recommendations for the client. Form a small description for the client of all these places.\n\n{places_info}"
 
