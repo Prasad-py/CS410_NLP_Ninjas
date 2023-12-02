@@ -6,11 +6,11 @@ import string
 from geopy.distance import geodesic
 import openai
 
-openai.api_key = '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'
+openai.api_key = # Get your key
 
-# Load the first 10000 data points from the Yelp JSON dataset
+# Load the first 100000 data points from the Yelp JSON dataset
 file_path = 'data/yelp_academic_dataset_business.json'
-yelp_data = pd.read_json(file_path, lines=True, chunksize=100000)
+yelp_data = pd.read_json(file_path, lines=True, chunksize=1000000)
 df = next(yelp_data)
 
 # Cleaning and tokenizing text without using nltk
@@ -44,6 +44,7 @@ def bm25_query(bm25, df_filtered, distances_within_radius, query, top_n=5, min_s
     # Apply user filters
     filtered_results = []
     for i in top_doc_indices:
+        print(i)
         business = df_filtered.iloc[i]
         if (business['stars'] >= min_stars and
             business['review_count'] >= min_reviews and
@@ -85,7 +86,7 @@ def findRecommendations(latitud, longitud, words, radius, minStars):
         places_info += f"- {row['PlaceName']}: {row['StarsAndReviewcounts']} within {row['Distance']} km, Categories: {row['Categories']}\n"
 
     # Initialize OpenAI client
-    # client = OpenAI()
+    client = OpenAI()
 
     # Complete prompt
     complete_prompt = f"You are a trip advisor. Your client is interested in {words}. These are the top recommendations for the client. Form a small description for the client of all these places.\n\n{places_info}"
