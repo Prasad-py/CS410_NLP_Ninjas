@@ -12,10 +12,11 @@ MapMingle is a dynamic nearby places recommender system that provides personaliz
 
 ## Demo Video
 
-Check out our demo video to see MapMingle in action and understand how it works:
+Check out our demo video to see MapMingle in action:
 
-[![MapMingle Demo Video](http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](http://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE "MapMingle Demo Video")
+[![MapMingle Demo Video](https://img.youtube.com/vi/wXWIm62aU9k/0.jpg)](https://youtu.be/wXWIm62aU9k)
 
+Click on the image above to watch the video on YouTube.
 
 ### Addressing a Need
 - The inception of MapMingle was driven by the growing demand for personalized and dynamic location-based services. This project aims to provide a solution that is both convenient and customizable, meeting the modern requirements of users.
