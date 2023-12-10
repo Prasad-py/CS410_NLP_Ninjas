@@ -10,6 +10,13 @@ MapMingle is a dynamic nearby places recommender system that provides personaliz
 - **Avinash Pathak** - NetID: apathak3
 - **Surya Sindhu Mallimanugula** - NetID: ssm13
 
+## Demo Video
+
+Check out our demo video to see MapMingle in action and understand how it works:
+
+[![MapMingle Demo Video](http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](http://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE "MapMingle Demo Video")
+
+
 ### Addressing a Need
 - The inception of MapMingle was driven by the growing demand for personalized and dynamic location-based services. This project aims to provide a solution that is both convenient and customizable, meeting the modern requirements of users.
 
