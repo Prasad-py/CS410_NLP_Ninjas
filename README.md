@@ -26,11 +26,35 @@ MapMingle is a dynamic nearby places recommender system that provides personaliz
 - MapMingle has the potential to significantly impact how individuals interact with their surroundings, making the discovery of new places more intuitive, personalized, and enjoyable. It represents an opportunity for our team to apply cutting-edge technologies in data filtering and ranking algorithms to address real-world challenges.
 
 
+## Dataset and Ranking Algorithm
+
+### Yelp Academic Dataset
+
+MapMingle utilizes the Yelp Academic Dataset, a rich collection of data from Yelp, one of the largest user-generated review platforms. This dataset is an excellent resource for location-based services and recommendation systems due to its comprehensive nature. Key features of the Yelp dataset include:
+
+- **Business Information:** Detailed data about local businesses including location, categories, and attributes.
+- **Reviews and Ratings:** Millions of user-generated reviews and ratings, offering deep insights into customer preferences and experiences.
+- **User Data:** Information about the users who provide reviews and ratings, which can be used to understand demographics and user behaviors.
+- **Check-in Information:** Data about user check-ins at businesses, reflecting popularity and customer visit patterns.
+
+This dataset provides the backbone for MapMingle's recommendation system, allowing for a nuanced understanding of user preferences and business attributes.
+
+### Ranking Algorithm - BM25
+
+MapMingle employs the BM25 (Best Matching 25) ranking algorithm for its recommendation engine. BM25 is a probabilistic information retrieval model, widely recognized for its effectiveness in ranking documents based on their relevance to a given search query. The key aspects of BM25 in the context of MapMingle are:
+
+- **Relevance Scoring:** BM25 calculates a score for each business in the dataset based on how closely it matches the user's search query, taking into account the frequency of query terms in each business's description and categories.
+- **Term Frequency-Document Frequency:** The algorithm considers both the frequency of the query term in each document (term frequency) and the number of documents containing the term (document frequency), balancing the weight given to common and rare terms.
+- **Tuning Parameters:** BM25 includes parameters like 'k1' and 'b', which can be fine-tuned to adjust the sensitivity of the model to term frequency and document length, respectively. This allows for customization based on specific use cases and datasets.
+
+By integrating BM25, MapMingle can efficiently and effectively rank businesses based on the user's preferences and search criteria, ensuring that the recommendations are both relevant and personalized.
+
+
 ## How to Run
 
 ### Prerequisites
 - Python installation.
-- OpenAI API key for the GPT model.
+- OpenAI API key for the GPT model - Put it in the file Recommender.py (line 10)
 
 ### Installation and Setup
 1. **Clone the Repository:**
